@@ -1,51 +1,30 @@
+
 import React, { memo } from 'react';
 
-// Memoized component
-const TodoItem = memo(({ todo, index }) => {
-  console.log(`TodoItem ${index} rendered`);
-  return (
-    <div className="memo-todo-item">
-      <span>Todo {index + 1}: {todo}</span>
-    </div>
-  );
+const MemoizedTodo = memo(({ todo }) => {
+  return <div className="todo">{todo}</div>;
 });
 
-// Non-memoized component for comparison
-const NonMemoTodoItem = ({ todo, index }) => {
-  console.log(`NonMemoTodoItem ${index} rendered`);
-  return (
-    <div className="non-memo-todo-item">
-      <span>Todo {index + 1}: {todo}</span>
-    </div>
-  );
+const NonMemoizedTodo = ({ todo }) => {
+  return <div className="todo">{todo}</div>;
 };
 
 const ReactMemo = ({ todos }) => {
-  console.log('ReactMemo component rendered');
-  
   return (
-    <div className="react-memo-demo">
-      <h2>React.memo Demo</h2>
-      <div className="comparison">
-        <div className="memo-section">
-          <h3>With React.memo</h3>
-          <div className="todos-container">
-            {todos.map((todo, index) => (
-              <TodoItem key={index} todo={todo} index={index} />
-            ))}
-          </div>
-        </div>
-        
-        <div className="non-memo-section">
-          <h3>Without React.memo</h3>
-          <div className="todos-container">
-            {todos.map((todo, index) => (
-              <NonMemoTodoItem key={index} todo={todo} index={index} />
-            ))}
-          </div>
-        </div>
+    <div>
+      <h3>React.memo Demonstration</h3>
+      <div>
+        <h4>Memoized Todos:</h4>
+        {todos.map((todo, i) => (
+          <MemoizedTodo key={i} todo={todo} />
+        ))}
       </div>
-      <p className="note">Check console to see rendering differences</p>
+      <div>
+        <h4>Non-Memoized Todos:</h4>
+        {todos.map((todo, i) => (
+          <NonMemoizedTodo key={i} todo={todo} />
+        ))}
+      </div>
     </div>
   );
 };
