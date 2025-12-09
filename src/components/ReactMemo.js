@@ -1,57 +1,51 @@
 import React, { memo } from 'react';
 
-// Child component that will be memoized
+// Memoized component
 const TodoItem = memo(({ todo, index }) => {
   console.log(`TodoItem ${index} rendered`);
   return (
-    <div className="todo-item-small">
-      <span>{todo}</span>
+    <div className="memo-todo-item">
+      <span>Todo {index + 1}: {todo}</span>
     </div>
   );
 });
 
-// Another child component without memo (for comparison)
-const TodoItemWithoutMemo = ({ todo, index }) => {
-  console.log(`TodoItemWithoutMemo ${index} rendered`);
+// Non-memoized component for comparison
+const NonMemoTodoItem = ({ todo, index }) => {
+  console.log(`NonMemoTodoItem ${index} rendered`);
   return (
-    <div className="todo-item-small">
-      <span>{todo}</span>
+    <div className="non-memo-todo-item">
+      <span>Todo {index + 1}: {todo}</span>
     </div>
   );
 };
 
 const ReactMemo = ({ todos }) => {
+  console.log('ReactMemo component rendered');
+  
   return (
-    <div className="react-memo">
-      <h2>React.memo Demonstration</h2>
-      <div className="card">
-        <h3>Todo List (Memoized)</h3>
-        <div className="todo-list-memo">
-          {todos.map((todo, index) => (
-            <TodoItem key={index} todo={todo} index={index} />
-          ))}
+    <div className="react-memo-demo">
+      <h2>React.memo Demo</h2>
+      <div className="comparison">
+        <div className="memo-section">
+          <h3>With React.memo</h3>
+          <div className="todos-container">
+            {todos.map((todo, index) => (
+              <TodoItem key={index} todo={todo} index={index} />
+            ))}
+          </div>
         </div>
         
-        <h3>Todo List (Not Memoized)</h3>
-        <div className="todo-list-normal">
-          {todos.map((todo, index) => (
-            <TodoItemWithoutMemo key={index} todo={todo} index={index} />
-          ))}
-        </div>
-        
-        <div className="explanation">
-          <h4>How React.memo works:</h4>
-          <ul>
-            <li>Memoizes component to prevent unnecessary re-renders</li>
-            <li>Only re-renders when props change</li>
-            <li>Check console to see rendering differences</li>
-            <li>Use for pure functional components</li>
-          </ul>
-          <p className="note">
-            Open browser console to see which components re-render when you add todos.
-          </p>
+        <div className="non-memo-section">
+          <h3>Without React.memo</h3>
+          <div className="todos-container">
+            {todos.map((todo, index) => (
+              <NonMemoTodoItem key={index} todo={todo} index={index} />
+            ))}
+          </div>
         </div>
       </div>
+      <p className="note">Check console to see rendering differences</p>
     </div>
   );
 };
