@@ -1,95 +1,103 @@
-import React, { useState } from 'react';
-import ReactMemo from './ReactMemo';
-import UseMemo from './UseMemo';
-import '../styles/App.css';
+import React, { useState, useMemo, memo } from 'react';
+import './App.css';
 
-const App = () => {
+// Memoized component
+const TodoItem = memo(({ todo }) => {
+  return <li>{todo}</li>;
+});
+
+// Expensive calculation component
+const ExpensiveComponent = ({ count }) => {
+  const expensiveValue = useMemo(() => {
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+      result += i;
+    }
+    return result * count;
+  }, [count]);
+
+  return <div>Expensive Value: {expensiveValue}</div>;
+};
+
+function App() {
   const [todos, setTodos] = useState(['Task 1', 'Task 2']);
-  const [counter, setCounter] = useState(0);
-  const [memoInput, setMemoInput] = useState('');
+  const [count, setCount] = useState(0);
+  const [input, setInput] = useState('');
 
-  const handleAddTodo = () => {
+  const addTodo = () => {
     setTodos([...todos, 'New todo']);
   };
 
-  const handleIncrement = () => {
-    setCounter(counter + 1);
+  const increment = () => {
+    setCount(count + 1);
   };
 
   const handleSubmit = () => {
-    if (memoInput.length > 5) {
-      setTodos([...todos, memoInput]);
-      setMemoInput('');
+    if (input.length > 5) {
+      setTodos([...todos, input]);
+      setInput('');
     }
   };
 
-  const handleInputChange = (e) => {
-    setMemoInput(e.target.value);
-  };
-
   return (
-    <div className="app">
-      <div className="main-content">
-        <div className="todo-section">
-          <h2>Todos</h2>
-          <div className="todos-list">
-            {todos.map((todo, index) => (
-              <div key={index} className="todo-item">
-                {todo}
-              </div>
-            ))}
-          </div>
-          
-          <button 
-            onClick={handleAddTodo}
-            className="btn add-todo-btn"
-            data-testid="add-todo-btn"
-          >
-            Add Todo
-          </button>
-          
-          <div className="counter-section">
-            <h3>Counter: {counter}</h3>
-            <button 
-              onClick={handleIncrement}
-              className="btn increment-btn"
-              data-testid="increment-btn"
-            >
-              Increment
-            </button>
-          </div>
-        </div>
-
-        <div className="input-section">
-          <h3>Add Custom Task</h3>
-          <input
-            type="text"
-            value={memoInput}
-            onChange={handleInputChange}
-            placeholder="Enter task (more than 5 characters)"
-            className="memo-input"
-            data-testid="memo-input"
-          />
-          <button 
-            onClick={handleSubmit}
-            className="btn submit-btn"
-            disabled={memoInput.length <= 5}
-            data-testid="submit-btn"
-          >
-            Submit
-          </button>
-          {memoInput.length > 0 && memoInput.length <= 5 && (
-            <p className="error">Task must be more than 5 characters</p>
-          )}
-        </div>
+    <div className="App">
+      <h1>Task Management App</h1>
+      
+      <div className="section">
+        <h2>Todos</h2>
+        <ul>
+          {todos.map((todo, index) => (
+            <TodoItem key={index} todo={todo} />
+          ))}
+        </ul>
+        <button 
+          data-testid="add-todo-btn"
+          onClick={addTodo}
+          className="button"
+        >
+          Add Todo
+        </button>
       </div>
 
-      <div className="memo-demo">
-        <UseMemo counter={counter} />
-        <ReactMemo todos={todos} />
+      <div className="section">
+        <h2>Counter: {count}</h2>
+        <button 
+          data-testid="increment-btn"
+          onClick={increment}
+          className="button"
+        >
+          Increment
+        </button>
+      </div>
+
+      <div className="section">
+        <h2>Add Custom Task</h2>
+        <input
+          type="text"
+          data-testid="memo-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Enter task (more than 5 characters)"
+          className="input"
+        />
+        {input.length > 0 && input.length <= 5 && (
+          <p className="error">Task must be more than 5 characters</p>
+        )}
+        <button
+          data-testid="submit-btn"
+          onClick={handleSubmit}
+          disabled={input.length <= 5}
+          className="button"
+        >
+          Submit
+        </button>
+      </div>
+
+      <div className="section">
+        <ExpensiveComponent count={count} />
       </div>
     </div>
   );
-};
+}
 
 export default App;
