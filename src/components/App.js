@@ -1,134 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import UseMemo from './UseMemo';
+import React, { useState } from 'react';
 import ReactMemo from './ReactMemo';
-import './styles.css';
+import UseMemo from './UseMemo';
+import '../styles/App.css';
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(['Task 1', 'Task 2']);
   const [counter, setCounter] = useState(0);
-  const [customTask, setCustomTask] = useState('');
-  const [error, setError] = useState('');
+  const [memoInput, setMemoInput] = useState('');
 
-  // Initialize with some todos
-  useEffect(() => {
-    setTodos(['Task 1', 'Task 2', 'Task 3']);
-  }, []);
-
-  // Add default todo
-  const addDefaultTodo = () => {
+  const handleAddTodo = () => {
     setTodos([...todos, 'New todo']);
   };
 
-  // Increment counter
-  const incrementCounter = () => {
+  const handleIncrement = () => {
     setCounter(counter + 1);
   };
 
-  // Handle custom task input
-  const handleCustomTaskChange = (e) => {
-    const value = e.target.value;
-    setCustomTask(value);
-    if (value.length > 0 && value.length <= 5) {
-      setError('Task must be more than 5 characters');
-    } else {
-      setError('');
+  const handleSubmit = () => {
+    if (memoInput.length > 5) {
+      setTodos([...todos, memoInput]);
+      setMemoInput('');
     }
   };
 
-  // Add custom task
-  const addCustomTask = () => {
-    if (customTask.trim().length > 5) {
-      setTodos([...todos, customTask]);
-      setCustomTask('');
-      setError('');
-    } else {
-      setError('Task must be more than 5 characters');
-    }
-  };
-
-  // Remove todo
-  const removeTodo = (index) => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+  const handleInputChange = (e) => {
+    setMemoInput(e.target.value);
   };
 
   return (
     <div className="app">
-      <h1>Task Management App</h1>
-      
-      <div className="container">
-        {/* Left Panel - Todos */}
+      <div className="main-content">
         <div className="todo-section">
-          <h2>Todo List</h2>
-          
-          <div className="button-group">
-            <button 
-              onClick={addDefaultTodo}
-              className="btn btn-primary"
-              data-testid="add-todo-btn"
-            >
-              Add Todo
-            </button>
-            
-            <button 
-              onClick={incrementCounter}
-              className="btn btn-secondary"
-              data-testid="increment-btn"
-            >
-              Increment Counter: {counter}
-            </button>
-          </div>
-
-          {/* Custom Task Input */}
-          <div className="custom-task">
-            <h3>Add Custom Task</h3>
-            <input
-              type="text"
-              value={customTask}
-              onChange={handleCustomTaskChange}
-              placeholder="Enter custom task (more than 5 characters)"
-              className="task-input"
-              data-testid="memo-input"
-            />
-            {error && <div className="error-message">{error}</div>}
-            <button 
-              onClick={addCustomTask}
-              className="btn btn-success"
-              disabled={customTask.trim().length <= 5}
-              data-testid="submit-btn"
-            >
-              Submit
-            </button>
-          </div>
-
-          {/* Todo List */}
-          <div className="todo-list">
+          <h2>Todos</h2>
+          <div className="todos-list">
             {todos.map((todo, index) => (
               <div key={index} className="todo-item">
-                <span>{todo}</span>
-                <button 
-                  onClick={() => removeTodo(index)}
-                  className="btn btn-danger btn-sm"
-                >
-                  Remove
-                </button>
+                {todo}
               </div>
             ))}
           </div>
-
-          {/* Stats */}
-          <div className="stats">
-            <p>Total Todos: {todos.length}</p>
-            <p>Counter Value: {counter}</p>
+          
+          <button 
+            onClick={handleAddTodo}
+            className="btn add-todo-btn"
+            data-testid="add-todo-btn"
+          >
+            Add Todo
+          </button>
+          
+          <div className="counter-section">
+            <h3>Counter: {counter}</h3>
+            <button 
+              onClick={handleIncrement}
+              className="btn increment-btn"
+              data-testid="increment-btn"
+            >
+              Increment
+            </button>
           </div>
         </div>
 
-        {/* Right Panel - Memo Components */}
-        <div className="memo-section">
-          <UseMemo counter={counter} />
-          <ReactMemo todos={todos} />
+        <div className="input-section">
+          <h3>Add Custom Task</h3>
+          <input
+            type="text"
+            value={memoInput}
+            onChange={handleInputChange}
+            placeholder="Enter task (more than 5 characters)"
+            className="memo-input"
+            data-testid="memo-input"
+          />
+          <button 
+            onClick={handleSubmit}
+            className="btn submit-btn"
+            disabled={memoInput.length <= 5}
+            data-testid="submit-btn"
+          >
+            Submit
+          </button>
+          {memoInput.length > 0 && memoInput.length <= 5 && (
+            <p className="error">Task must be more than 5 characters</p>
+          )}
         </div>
+      </div>
+
+      <div className="memo-demo">
+        <UseMemo counter={counter} />
+        <ReactMemo todos={todos} />
       </div>
     </div>
   );
